@@ -2,6 +2,15 @@
 
 # NOTE: The script is suited to update only arc toolchain
 
+# Help sctring
+
+help_str="Usage:\n\n
+./BR_TC_VER -o [old_version] -n [new_version] -p [path_to_buildroot]\n\n
+NOTE: -o and -p are requred options, missing them will lead to failures\n\n
+\t[old_version]\t\t\tshould be something like \"arc-YYYY.MM\"\n
+\t[new_version]\t\t\tshould be something like \"arc-YYYY.MM\"\n
+\t[path_to_buildroot]\t\tis path to \"buildroot\" root directory\n"
+
 # Script variables with default values
 old=""                           # Required option
 version="arc-2016.03"                      
@@ -9,9 +18,9 @@ buildroot_path=""                # Required option
 sha_sum=none
 
 # Get the command line parametres
-while getopts ":v:p:o:" OPTION; do
+while getopts ":n:p:o:h" OPTION; do
     case "$OPTION" in
-	v)
+	n)
 	    version=$OPTARG
 	    ;;
 	p)
@@ -20,11 +29,28 @@ while getopts ":v:p:o:" OPTION; do
 	o)
 	    old=$OPTARG
 	    ;;
+	h)
+	    echo -e $help_str
+	    exit 1
+	    ;;
 	\?)
 	    echo "No such argument"
 	    ;;
     esac
 done
+
+if [ -z $old ];
+then
+    echo "You must specify old version of toolchain to run the script"
+    exit 1
+fi
+
+if [ -z $buildroot_path ];
+then
+    echo "You must specify paht to buildroot to run the script"
+    exit 1
+fi
+
 
 
 #### Update binutils ####
