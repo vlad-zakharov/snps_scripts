@@ -16,7 +16,7 @@ manually, especially custom patches as they may not be required.\n"
 # Script variables with default values
 old=""
 version="arc-2016.03"                      
-buildroot_path="$HOME/git/buildroot"
+buildroot_path="$HOME/source/buildroot"
 sha_sum=none
 
 # Files where the script tries to find old arc toolchain version
