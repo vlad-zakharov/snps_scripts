@@ -137,7 +137,32 @@ then
     exit 1
 fi
 
-# Update binutils
+# Update sha hash for new gdb
+cd $buildroot_path/package/gdb && \
+if test -e "../../dl/gdb-$version-gdb.tar.gz"
+then
+    sha_sum=$(sha512sum "../../dl/gdb-$version-gdb.tar.gz" | awk '{print $1;}')
+else
+    wget -P ../../dl "https://github.com/foss-for-synopsys-dwc-arc-processors/binutils-gdb/archive/$version-gdb/gdb-$version-gdb.tar.gz" && \
+    sha_sum=$(sha512sum "../../dl/gdb-$version-gdb.tar.gz" | awk '{print $1;}')
+fi
+if [ $? -ne 0 ]
+then
+    revert_changes
+    exit 1
+fi
+
+
+sed "s/sha512.*gdb-${old}-gdb.tar.gz/sha512\ \ ${sha_sum}\ \ gdb-${version}-gdb.tar.gz/g" gdb.hash > gdb.hash.temp && \
+mv gdb.hash.temp gdb.hash
+if [ $? -ne 0 ]
+then
+    revert_changes
+    exit 1
+fi
+
+
+#### Update binutils ####
 cd $buildroot_path/package/binutils && \
 sed "s/$old/$version/g" Config.in.host > Config.in.host.temp && \
 mv Config.in.host.temp Config.in.host && \
@@ -155,6 +180,21 @@ cd $buildroot_path/package/gcc && \
 sed "s/$old/$version/g" Config.in.host > Config.in.host.temp && \
 mv Config.in.host.temp Config.in.host && \
 git mv $old $version
+if [ $? -ne 0 ]
+then
+    revert_changes
+    exit 1
+fi
+
+
+#### Update gdb ####
+cd $buildroot_path/package/gdb && \
+sed "s/$old/$version/g" Config.in.host > Config.in.host.temp && \
+mv Config.in.host.temp Config.in.host && \
+if [ -d $old ]
+then
+    git mv $old $version
+fi
 if [ $? -ne 0 ]
 then
     revert_changes
