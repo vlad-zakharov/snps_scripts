@@ -1,3 +1,3 @@
-file2mem  0x81000000 ~/output/buildroot/axs103_defconfig/images/u-boot.bin
+file2mem  0x81000000 ~/images/u-boot/u-boot.bin
 eval pc=0x81000000
 run

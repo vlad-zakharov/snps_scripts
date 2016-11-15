@@ -5,6 +5,10 @@ import os
 
 chipinit_file = "load"
 
+# Change cwd to the script's dir to avoid path errors
+os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))
+
+
 # Start mbd
 # mdb -digilent -connect_only -cl -cmd="read load"
 try:
